@@ -1,0 +1,22 @@
+{
+  "name": "dev_web_avance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clementschmouker/dev_web_avance.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clementschmouker/dev_web_avance/issues"
+  },
+  "homepage": "https://github.com/clementschmouker/dev_web_avance#readme",
+  "devDependencies": {
+    "eslint": "^3.16.1"
+  }
+}
