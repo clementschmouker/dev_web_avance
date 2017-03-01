@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/clementschmouker/dev_web_avance#readme",
   "devDependencies": {
+    "babel-eslint": "^7.1.1",
     "eslint": "^3.16.1"
   }
 }
