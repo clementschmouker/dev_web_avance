@@ -31,7 +31,10 @@ class App {
 		this.light = new THREE.AmbientLight(0xffffff);
 		this._scene.add(this.light);
 
-		this.cubeMat = new THREE.MeshLambertMaterial(0xffffff);
+		this.cubeMat = new THREE.MeshLambertMaterial({
+			color: 0xffffff,
+			wireframe: true
+		});
 		this.cubeGeo = new THREE.BoxGeometry(1, 1, 1);
 		this.cubeMesh = new THREE.Mesh(this.cubeGeo, this.cubeMat);
 		this._scene.add(this.cubeMesh);
@@ -49,8 +52,8 @@ class App {
 			nearPlane,
 			farPlane
 		);
-		this._camera.position.z = -5;
-		this._camera.lookAt(0, 0, 0);
+		this._camera.position.z = 5;
+		this._camera.position.y = 1;
 	}
 
 	initRenderer() {
