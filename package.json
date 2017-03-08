@@ -1,42 +1,23 @@
 {
-  "name": "heaj",
+  "name": "dev_web_avance",
   "version": "1.0.0",
-  "description": "Développement web avancé - 3e année",
+  "description": "",
   "main": "index.html",
   "scripts": {
-    "markdownlint": "./node_modules/.bin/markdownlint *.md || exit 0",
-    "eslint": "./node_modules/.bin/eslint src/** || exit 0",
-    "lint": "npm run markdownlint && npm run eslint",
-    "clean": "rm -rf dist/*",
-    "dev": "npm run lint && npm run clean && webpack-dev-server --env=dev",
-    "build": "npm run lint && npm run clean && webpack --env=prod --progress --profile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thierrymichel/heaj.git"
+    "url": "git+https://github.com/clementschmouker/dev_web_avance.git"
   },
-  "keywords": [
-    "heaj",
-    "javascript",
-    "learning",
-    "threejs"
-  ],
-  "author": "thierrymichel <thmichel@gmail.com> (http://thierrymichel.net)",
+  "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thierrymichel/heaj/issues"
+    "url": "https://github.com/clementschmouker/dev_web_avance/issues"
   },
-  "homepage": "https://github.com/thierrymichel/heaj#readme",
+  "homepage": "https://github.com/clementschmouker/dev_web_avance#readme",
   "devDependencies": {
-    "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.3.2",
-    "babel-preset-env": "^1.1.10",
-    "eslint": "^3.16.1",
-    "markdownlint-cli": "^0.2.0",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.4.1",
-    "webpack-merge": "^3.0.0"
+    "eslint": "^3.16.1"
   }
 }
