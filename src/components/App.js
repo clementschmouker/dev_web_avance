@@ -74,7 +74,9 @@ class App {
 
 	renderApp() {
 		this._renderer.render(this._scene, this._camera);
-		window.requestAnimationFrame(this.renderApp.bind(this));
+		requestAnimationFrame(() => {
+            this.renderApp();
+        }); // équivalent à un .bind(this);
 	}
 }
 
