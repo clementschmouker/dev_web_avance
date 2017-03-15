@@ -6,6 +6,7 @@
 
 
  import * as THREE from 'three'; //import tous les exports de three, les store dans un objet THREE, depuis le fichier "three"
+ import CustomCube from 'Cube';
 
 class App {
 
@@ -26,19 +27,21 @@ class App {
 		this._width = window.innerWidth;
 		this._height = window.innerHeight;
 		this._scene = new THREE.Scene();
+        //lights
+        this.initLight();
 
-
-		this.light = new THREE.AmbientLight(0xffffff);
-		this._scene.add(this.light);
-
-		this.cubeMat = new THREE.MeshLambertMaterial({
-			color: 0xffffff,
-			wireframe: true
-		});
-		this.cubeGeo = new THREE.BoxGeometry(1, 1, 1);
-		this.cubeMesh = new THREE.Mesh(this.cubeGeo, this.cubeMat);
-		this._scene.add(this.cubeMesh);
+        //first cube
+        this._customCube = new CustomCube( { wireframe: false } );
+        this._scene.add(this._customCube);
 	}
+
+
+    initLight() {
+        const light = new THREE.AmbientLight(0xffffff);
+		this._scene.add(light);
+
+    }
+
 
 	initCamera() {
 		const fieldOfView = 60;
@@ -56,6 +59,7 @@ class App {
 		this._camera.position.y = 1;
 	}
 
+
 	initRenderer() {
 		this._renderer = new THREE.WebGLRenderer();
 		this._renderer.setSize(this._width, this._height);
@@ -66,6 +70,8 @@ class App {
 	updateApp() {
 
 	}
+
+
 	renderApp() {
 		this._renderer.render(this._scene, this._camera);
 		window.requestAnimationFrame(this.renderApp.bind(this));
