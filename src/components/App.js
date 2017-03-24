@@ -5,9 +5,9 @@
   */
 
 
- import * as THREE from 'three'; //import tous les exports de three, les store dans un objet THREE, depuis le fichier "three"
- import CustomCube from 'Cube';
- const OrbitControls = require('three-orbit-controls')(THREE)
+import * as THREE from 'three'; //import tous les exports de three, les store dans un objet THREE, depuis le fichier "three"
+import CustomCube from 'Cube';
+const OrbitControls = require('three-orbit-controls')(THREE)
 
 class App {
 
@@ -18,7 +18,9 @@ class App {
 		this.initCamera();
 		this.initRenderer();
 
-        this.initControls();
+        if(global.debug) {
+            this.initControls();
+        }
 
         //launch app rendering loop
         this.renderApp();
@@ -34,6 +36,10 @@ class App {
 		this._width = window.innerWidth;
 		this._height = window.innerHeight;
 		this._scene = new THREE.Scene();
+        if(global.debug) {
+            window.scene = this._scene;
+            window.THREE = THREE;
+        }
         //lights
         this.initLight();
 
@@ -54,7 +60,7 @@ class App {
 
 
     createCube() {
-        this._cube = new CustomCube( { wireframe: true } );
+        this._cube = new CustomCube( { wireframe: false } );
         this._scene.add(this._cube);
     }
 
@@ -101,14 +107,32 @@ class App {
                 case 'z':
                     this.pressedKey[0] = true;
                     break;
+                case 's':
+                    this.pressedKey[1] = true;
+                    break;
+                case 'q':
+                    this.pressedKey[2] = true;
+                    break;
+                case 'd':
+                    this.pressedKey[3] = true;
+                    break;
             };
 
         }.bind(this))
 
-        addEventListener('keyUp', function(event) {
+        addEventListener('keyup', function(event) {
             switch(event.key) {
                 case 'z':
                     this.pressedKey[0] = false;
+                    break;
+                case 's':
+                    this.pressedKey[1] = false;
+                    break;
+                case 'q':
+                    this.pressedKey[2] = false;
+                    break;
+                case 'd':
+                    this.pressedKey[3] = false;
                     break;
             };
 
@@ -117,7 +141,10 @@ class App {
     }
 
     updateMovement() {
-        (this.pressedKey[0] ? this._cube.position.z -=1 : false);
+        (this.pressedKey[0] ? this._cube.position.z -=.1 : false);
+        (this.pressedKey[1] ? this._cube.position.z +=.1 : false);
+        (this.pressedKey[2] ? this._cube.position.x -=.1 : false);
+        (this.pressedKey[3] ? this._cube.position.x +=.1 : false);
     }
 
 

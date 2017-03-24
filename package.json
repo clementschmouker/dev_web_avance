@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "three": "^0.84.0",
-    "three-orbit-controls": "^82.1.0"
+    "three-orbit-controls": "^82.1.0",
+    "three-stats": "^1.0.1"
   }
 }

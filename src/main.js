@@ -4,6 +4,8 @@
 
 import App from 'App';
 
+global.debug = true;
+
 console.info('Ready!!!! 🚀');
 
 
