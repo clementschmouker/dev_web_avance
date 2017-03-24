@@ -9,4 +9,4 @@ console.info('Ready!!!! 🚀');
 
 const app = new App();
 
-app.renderApp();
+// app.renderApp();

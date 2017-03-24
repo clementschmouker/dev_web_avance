@@ -7,6 +7,7 @@
 
  import * as THREE from 'three'; //import tous les exports de three, les store dans un objet THREE, depuis le fichier "three"
  import CustomCube from 'Cube';
+ const OrbitControls = require('three-orbit-controls')(THREE)
 
 class App {
 
@@ -16,6 +17,12 @@ class App {
 		this.initScene();
 		this.initCamera();
 		this.initRenderer();
+
+        this.initControls();
+
+        //launch app rendering loop
+        this.renderApp();
+
 	}
 
 
@@ -31,8 +38,11 @@ class App {
         this.initLight();
 
         //first cube
-        this._customCube = new CustomCube( { wireframe: false } );
-        this._scene.add(this._customCube);
+        this.createCube();
+
+        //add keys
+        this.initKeys();
+
 	}
 
 
@@ -40,6 +50,12 @@ class App {
         const light = new THREE.AmbientLight(0xffffff);
 		this._scene.add(light);
 
+    }
+
+
+    createCube() {
+        this._cube = new CustomCube( { wireframe: true } );
+        this._scene.add(this._cube);
     }
 
 
@@ -67,15 +83,49 @@ class App {
 	}
 
 
+    initControls() {
+        this._controls = new OrbitControls(this._camera, this._renderer.domElement);
+    }
+
 	updateApp() {
 
 	}
+
+
+    initKeys() {
+        this.pressedKey = [];
+
+        addEventListener('keydown', function(event) {
+            console.log(event.key, event.keyCode);
+            switch(event.key) {
+                case 'z':
+                    this.pressedKey[0] = true;
+                    break;
+            };
+
+        }.bind(this))
+
+        addEventListener('keyUp', function(event) {
+            switch(event.key) {
+                case 'z':
+                    this.pressedKey[0] = false;
+                    break;
+            };
+
+        }.bind(this))
+
+    }
+
+    updateMovement() {
+        (this.pressedKey[0] ? this._cube.position.z -=1 : false);
+    }
 
 
 	renderApp() {
 		this._renderer.render(this._scene, this._camera);
 		requestAnimationFrame(() => {
             this.renderApp();
+            this.updateMovement();
         }); // équivalent à un .bind(this);
 	}
 }
