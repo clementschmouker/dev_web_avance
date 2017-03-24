@@ -8,6 +8,7 @@
 import * as THREE from 'three'; //import tous les exports de three, les store dans un objet THREE, depuis le fichier "three"
 import CustomCube from 'Cube';
 const OrbitControls = require('three-orbit-controls')(THREE)
+const { Stats } = require('three-stats');
 
 class App {
 
@@ -20,6 +21,7 @@ class App {
 
         if(global.debug) {
             this.initControls();
+            this.initStats();
         }
 
         //launch app rendering loop
@@ -92,6 +94,14 @@ class App {
     initControls() {
         this._controls = new OrbitControls(this._camera, this._renderer.domElement);
     }
+
+
+    initStats() {
+        this._stats = new Stats();
+        this._stats.showPanel(0);
+        document.body.appendChild(this._stats.dom);
+    }
+
 
 	updateApp() {
 
