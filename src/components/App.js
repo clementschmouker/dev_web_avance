@@ -9,24 +9,16 @@ import * as THREE from 'three'; //import tous les exports de three, les store da
 import CustomCube from 'Cube';
 const OrbitControls = require('three-orbit-controls')(THREE)
 const { Stats } = require('three-stats');
+import debounce from 'lodash/debounce';
 
 class App {
 
 	// this.name = "";
 
 	constructor() {
+        this._lights = [];
+        this._objects = [];
 		this.initScene();
-		this.initCamera();
-		this.initRenderer();
-
-        if(global.debug) {
-            this.initControls();
-            this.initStats();
-        }
-
-        //launch app rendering loop
-        this.renderApp();
-
 	}
 
 
@@ -42,28 +34,52 @@ class App {
             window.scene = this._scene;
             window.THREE = THREE;
         }
+
+        this.initCamera();
+        this.initRenderer();
+
         //lights
         this.initLight();
-
         //first cube
         this.createCube();
-
         //add keys
         this.initKeys();
 
+
+        //debug mode
+        if(global.debug) {
+            this.initControls();
+            this.initStats();
+        }
+
+
+        //launch app rendering loop
+        this.renderApp();
+
+        this.addHelpers();
+
+
+        this.bind();
 	}
 
 
     initLight() {
-        const light = new THREE.AmbientLight(0xffffff);
-		this._scene.add(light);
+        const ambientLight = new THREE.AmbientLight(0x777777);
+        this._lights.push(ambientLight);
+		this._scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffffff, .75);
+        spotLight.position.set( -300, 300, 300 );
+        spotLight.castShadow = true;
+        this._lights.push(spotLight);
+        this._scene.add(spotLight);
 
     }
 
 
     createCube() {
-        this._cube = new CustomCube( { wireframe: false } );
-        this._scene.add(this._cube);
+        this._cube = new CustomCube( { wireframe: false, speed: 5 } );
+        this.add(this._cube);
     }
 
 
@@ -79,14 +95,17 @@ class App {
 			nearPlane,
 			farPlane
 		);
-		this._camera.position.z = 5;
-		this._camera.position.y = 1;
+		this._camera.position.z = -500;
+		this._camera.position.y = 100;
 	}
 
 
 	initRenderer() {
-		this._renderer = new THREE.WebGLRenderer();
+		this._renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
 		this._renderer.setSize(this._width, this._height);
+        this._renderer.shadowMap.enabled = true;
 		document.body.appendChild(this._renderer.domElement);
 	}
 
@@ -104,15 +123,47 @@ class App {
 
 
 	updateApp() {
+        this._camera.lookAt(this._cube.position);
 
+        this._objects.forEach((obj) => {
+            obj.update();
+        })
 	}
+
+    bind() {
+        window.addEventListener('resize', debounce(this.onResize.bind(this), 500))
+    }
+
+    onResize() {
+        this._width = window.innerWidth;
+        this._height = window.innerHeight;
+        this._renderer.setSize(this._width, this._height);
+        this._camera.aspect = this._width / this._height;
+        this._camera.updateProjectionMatrix();
+    }
+
+
+    addHelpers() {
+        //go through lights
+        this._lights.forEach((item) => {
+            if(item.shadow) {
+                this.addHelper(item.shadow.camera);
+            }
+        })
+        //Add helpers
+    }
+
+    addHelper(camera) {
+        const helper = new THREE.CameraHelper(camera)
+        this._scene.add(helper);
+    }
 
 
     initKeys() {
         this.pressedKey = [];
 
-        addEventListener('keydown', function(event) {
-            console.log(event.key, event.keyCode);
+        addEventListener('keydown', (event) => {
+            // console.log(event.key, event.keyCode);
             switch(event.key) {
                 case 'z':
                     this.pressedKey[0] = true;
@@ -126,11 +177,17 @@ class App {
                 case 'd':
                     this.pressedKey[3] = true;
                     break;
+                case 'a':
+                    this.pressedKey[4] = true;
+                    break;
+                case 'e':
+                    this.pressedKey[5] = true;
+                    break;
             };
 
-        }.bind(this))
+        })
 
-        addEventListener('keyup', function(event) {
+        addEventListener('keyup', (event) => {
             switch(event.key) {
                 case 'z':
                     this.pressedKey[0] = false;
@@ -144,27 +201,70 @@ class App {
                 case 'd':
                     this.pressedKey[3] = false;
                     break;
+                case 'a':
+                    this.pressedKey[4] = false;
+                    break;
+                case 'e':
+                    this.pressedKey[5] = false;
+                    break;
             };
 
-        }.bind(this))
+        })
 
     }
 
     updateMovement() {
-        (this.pressedKey[0] ? this._cube.position.z -=.1 : false);
-        (this.pressedKey[1] ? this._cube.position.z +=.1 : false);
-        (this.pressedKey[2] ? this._cube.position.x -=.1 : false);
-        (this.pressedKey[3] ? this._cube.position.x +=.1 : false);
+        const angle = this._cube.rotation.y;
+
+        //rotate
+        (this.pressedKey[4] ? this._cube.rotation.y += this._cube.speed / 100 : false);
+        (this.pressedKey[5] ? this._cube.rotation.y -= this._cube.speed / 100 : false);
+
+        //deplacement
+        if(this.pressedKey[0] ){
+            this._cube.position.z += this._cube.speed* Math.cos(angle);
+            this._cube.position.x += this._cube.speed* Math.sin(angle);
+            this._cube._mesh.rotation.x += .1;
+        }
+        if(this.pressedKey[1]) {
+            this._cube.position.z -= this._cube.speed* Math.cos(angle);
+            this._cube.position.x -= this._cube.speed* Math.sin(angle);
+            this._cube._mesh.rotation.x -= .1;
+        }
+        if(this.pressedKey[2]) {
+            this._cube.position.z += this._cube.speed* Math.sin(-angle);
+            this._cube.position.x += this._cube.speed* Math.cos(angle);
+            // this._cube._mesh.rotation.z -= .1;
+        }
+        if(this.pressedKey[3]) {
+            this._cube.position.z -= this._cube.speed* Math.sin(-angle);
+            this._cube.position.x -= this._cube.speed* Math.cos(angle);
+            // this._cube._mesh.rotation.z += .1;
+        }
     }
 
 
 	renderApp() {
+        if(this._stats) {
+            this._stats.begin();
+        }
+
 		this._renderer.render(this._scene, this._camera);
 		requestAnimationFrame(() => {
             this.renderApp();
+            this.updateApp();
             this.updateMovement();
         }); // équivalent à un .bind(this);
-	}
+
+        if(this._stats) {
+            this._stats.end();
+        }
+    }
+
+    add(obj) {
+        this._objects.push(obj);
+        this._scene.add(obj);
+    }
 }
 
 

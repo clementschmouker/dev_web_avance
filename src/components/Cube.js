@@ -4,12 +4,13 @@ class CustomCube extends THREE.Object3D {
 
 	constructor( obj ){
 		super();
-		this.size = 1;
+		this.size = 60;
+		this.speed = obj.speed;
 		if(obj.wireframe) {
-			this.createCube(1, true);
+			this.createCube(this.size, true);
 		}
 		else {
-			this.createCube(1, false);
+			this.createCube(this.size, false);
 		}
 	};
 
@@ -24,8 +25,36 @@ class CustomCube extends THREE.Object3D {
 			material.wireframe = true;
 		}
 		this._mesh = new THREE.Mesh( geometry, material);
+
 		//adds the cube to the object
 		this.add(this._mesh);
+		this.addArrow();
+	}
+
+	update() {
+		
+	}
+
+
+
+	addArrow() {
+		//directional arrow
+		const dirGeo = new THREE.CylinderGeometry(0, this.size/4, this.size/2);
+		const dirMat = new THREE.MeshLambertMaterial({
+			color: 0x00ff00
+		})
+		this._directionMesh = new THREE.Mesh(dirGeo, dirMat);
+		this._directionMesh.position.set(0, 50, 40);
+		this._directionMesh.rotation.set(Math.PI/2, 0, 0);
+		this.add(this._directionMesh);
+
+		const dirBodyGeo = new THREE.CylinderGeometry(5, 5, this.size);
+		this._directionBodyMesh = new THREE.Mesh(dirBodyGeo, dirMat);
+		this._directionBodyMesh.position.set(0, 50, 0);
+		this._directionBodyMesh.rotation.set(Math.PI/2, 0, 0);
+		this.add(this._directionBodyMesh);
+
+
 	}
 
 
